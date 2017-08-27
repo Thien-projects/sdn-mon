@@ -1,4 +1,7 @@
 # sdn-mon
+Created: 2017-08-27
+Author: Thien Phan 
+
 Implementation code of SDN-Mon (PhD topic - about SDN monitoring framework)
 This repository includes:
 
