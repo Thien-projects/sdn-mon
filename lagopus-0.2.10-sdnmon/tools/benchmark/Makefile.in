@@ -1,0 +1,10 @@
+TOPDIR		= @TOPDIR@
+MKRULESDIR	= @MKRULESDIR@
+
+include $(MKRULESDIR)/vars.mk
+
+ifneq ($(and $(RTE_SDK),$(HAVE_PAPI)),)
+DIRS	= sample/dump_pkts sample/match_pkts
+endif
+
+include $(MKRULESDIR)/rules.mk

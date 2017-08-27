@@ -1,0 +1,46 @@
+# Copyright (C) 2014-2016 Nippon Telegraph and Telephone Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+# implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+benchmarks:
+  - file : sample_dump_pkts1
+    include_files:
+      - ../dump_pkts/dump_pkts.h
+    lib_files:
+      - ../dump_pkts/dump_pkts.o
+    external_libs: ""
+    setup_func: setup
+    teardown_func: teardown
+    target_func: dump_pkts
+    pcap: icmp.pcap
+    num_measurements: 2
+    batch_size: 1
+  - file : sample_dump_pkts2
+    include_files:
+      - ../dump_pkts/dump_pkts.c
+    target_func: dump_pkts
+    pcap: icmp.pcap
+  - file : sample_match_pkts1
+    include_files:
+      - ../match_pkts/match_pkts.h
+    lib_files:
+      - ../match_pkts/match_pkts.o
+    setup_func: setup
+    teardown_func: teardown
+    target_func: match_pkts
+    pcap: icmp.pcap
+    dsl: lagopus.dsl
+    dpdk_opts: -cf -n4
+    dp_opts: -p3

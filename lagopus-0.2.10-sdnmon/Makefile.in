@@ -1,0 +1,52 @@
+TOPDIR		= @TOPDIR@
+MKRULESDIR	= @MKRULESDIR@
+
+include $(MKRULESDIR)/vars.mk
+
+DIRS	=	tools \
+		src/lib \
+		src/include \
+		src/agent \
+		src/dataplane \
+		src/datastore \
+		@SNMP_DIR@ \
+		src/cmds \
+		src/config/lagosh \
+		debian
+
+include $(MKRULESDIR)/rules.mk
+
+install:: dpdk-install
+
+clean:: dpdk-clean
+	$(RM) -r autom4te.cache config.log
+	find . -type f \( \
+		-name '*~' -o \
+		-name 'core' -o \
+		-name '*.core' -o \
+		-name 'vgcore.*' \
+	\) -exec rm -f {} \;
+
+distclean::	clean
+	$(RM) -r ./src/dpdk/* ./src/dpdk/.??* \
+		./tools/unity/* ./tools/unity/.??*
+	$(RM) config.* mk/vars.mk mk/doxygen.conf ./libtool
+	# lagosh.py is not removed in 'clean'.
+	$(RM) -f src/config/lagosh/lagosh.py
+	find . -type f \( \
+		-name '.depend' \
+	\) | xargs $(RM)
+	find . -type d \( \
+		-name '.libs' \
+	\) | xargs $(RM) -r
+
+ultimateclean:	distclean
+	@git clean -n -f -d -x | \
+	sed 's:^Would[[:space:]][[:space:]]*remove[[:space:]][[:space:]]*::' | \
+	grep -v tools/unity | \
+	xargs rm -rf
+
+show-garbage:
+	@git clean -n -f -d -x | \
+	sed 's:^Would[[:space:]][[:space:]]*remove[[:space:]][[:space:]]*::' | \
+	grep -v tools/unity

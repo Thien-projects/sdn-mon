@@ -1,0 +1,23 @@
+---
+# configuration for ansible.
+system:
+  shell_dir: "{{ vagrant.system.vagrant_dir }}/lib/shell"
+  work_dir: "{{ ansible_env.HOME }}/work"
+  # TODO:
+  vagrant_private_key: https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant
+  vagrant_public_key: https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub
+
+lagopus:
+  git: https://github.com/lagopus/lagopus.git
+  dir: "{{ system.work_dir }}/lagopus"
+  is_used_git_ssh: false
+
+dpdk:
+  is_used: true
+
+dpdk_env:
+  RTE_SDK: "{{ lagopus.dir }}/src/dpdk"
+
+proxy_env:
+  http_proxy:
+  https_proxy:

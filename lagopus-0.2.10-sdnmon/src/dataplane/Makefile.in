@@ -1,0 +1,59 @@
+TOPDIR		= @TOPDIR@
+MKRULESDIR	= @MKRULESDIR@
+
+RTE_SDK         = @RTE_SDK@
+RTE_TARGET      = @RTE_TARGET@
+RTE_LIBDIR	= @RTE_LIBDIR@
+
+OSDEF		= @OSDEF@
+HYBRID		= @HYBRID@
+PIPELINER	= @PIPELINER@
+
+TARGET_LIB		= $(LAGOPUS_DATAPLANE_LIB)
+INSTALL_LIB_TARGETS	= $(TARGET_LIB)
+INSTALL_LIB_DIR		= $(DEST_LIBDIR)
+
+OFPROTODIR=ofproto
+DPMGRDIR=mgr
+
+ifeq ($(RTE_SDK),)
+DATAPATHDIR=sock
+else
+DATAPATHDIR=dpdk
+endif
+
+include $(OFPROTODIR)/Makefile.inc
+include $(DPMGRDIR)/Makefile.inc
+include $(DATAPATHDIR)/Makefile.inc
+
+SRCS = $(addprefix $(OFPROTODIR)/, $(OFPROTOSRCS))
+SRCS+= $(addprefix $(DPMGRDIR)/, $(DPMGRSRCS))
+SRCS+= $(addprefix $(DATAPATHDIR)/, $(DATAPATHSRCS))
+ifeq ($(HYBRID),yes)
+SRCS+= $(addprefix $(DPMGRDIR)/, $(HYBRIDSRCS))
+endif
+ifeq ($(PIPELINER),yes)
+SRCS+= $(addprefix $(DPMGRDIR)/, $(PIPELINESRCS))
+endif
+
+CPPFLAGS += -I$(BUILD_DATAPLANEDIR)
+CPPFLAGS += -I$(BUILD_DATAPLANEDIR)/$(OFPROTODIR)
+CPPFLAGS += -I$(BUILD_DATAPLANEDIR)/$(DPMGRDIR)
+CPPFLAGS += -I$(BUILD_DATAPLANEDIR)/$(DATAPATHDIR)
+CPPFLAGS += -DPMDDIR=\"$(DEST_LIBDIR)/dpdk-pmd\"
+
+WARN_CFLAGS += -Werror=missing-prototypes
+WARN_CFLAGS += -Werror=uninitialized
+
+DEP_LIBS	+= $(DEP_LAGOPUS_UTIL_LIB)
+ifneq ($(RTE_SDK),)
+DEP_LIBS	+= $(DEP_DPDK_LIB)
+endif
+
+TARGETS	=	$(TARGET_LIB)
+
+DIRS	=	$(DPMGRDIR)/test $(OFPROTODIR)/test
+
+include $(MKRULESDIR)/vars.mk
+include $(MKRULESDIR)/rules.mk
+include .depend

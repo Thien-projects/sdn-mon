@@ -1,0 +1,10 @@
+---
+- include: ubuntu.yml
+
+- include: pip.yml
+
+- include: env.yml
+
+- include: lagopus.yml
+
+- include: dpdk.yml

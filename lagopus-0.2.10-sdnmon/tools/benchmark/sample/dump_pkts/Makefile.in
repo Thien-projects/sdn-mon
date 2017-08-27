@@ -1,0 +1,10 @@
+TOPDIR		= @TOPDIR@
+MKRULESDIR	= @MKRULESDIR@
+
+SRCS	= dump_pkts.c
+
+TARGETS	= dump_pkts.lo
+
+include $(MKRULESDIR)/vars.mk
+include $(MKRULESDIR)/rules.mk
+include .depend
